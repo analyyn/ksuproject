@@ -1,0 +1,111 @@
+{% extends 'home.html' %}
+{% load static %}
+{%block content %}
+<center><h3><a style="color:#fff;" href="{% url 'evaluation' %}">Add new faculty rating</a></h3></center>
+  <hr>
+  <center><div>
+    <table class='head-table'>
+        <thead>
+          <tr>
+            <th>Scale</th>
+            <th>Descriptive Rating</th>
+            <th>Qualitative Description</th>
+            </tr>
+        </thead>
+        <tbody> 
+              <tr>
+                <td>5</td>
+                <td>Poor</td>
+                <td>Performance failed to meet job requirements</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Fair</td>
+                <td>Performance need some enhancement to meet job requirements</td>
+                <tr>
+                </tr>
+                <td>3</td>
+                <td>Satisfactory</td>
+                <td>Performance meets the requirements</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Very Satisfactory</td>
+                <td>Performance always exceeds the requirements</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Outstanding</td>
+                <td>Performance is exceptional</td>
+              </tr>
+        </tbody>
+    </table>
+</div></center>
+<hr>
+<br>
+<br>
+
+<center><h4>Faculty Evaluations</h4></center>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/search.js' %}"></script>
+<center><div class="mb-3">
+  <input type="text" id="search-input" placeholder="Search...">
+  <button type="button" id="search-button">Search</button>
+</div></center>
+<div class="mb-3">
+<table id="myTable" class="table app-table-hover mb-0 text-left">
+  <thead>
+    <tr>
+      <th class="cell">Last Name</th>
+      <th class="cell">First Name</th>
+      <th class="cell">Middle Name</th>
+            <th class="cell">Rank</th>
+      <th class="cell">Semester</th>
+      <th class="cell">Subject Code</th>
+      <th class="cell">Total Average</th>
+      <th class="cell">Year</th>
+      <th class="cell">Evaluator</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% csrf_token %}
+    {% for evaluation in evaluations %}
+    <tr>
+      <td class="cell">{{ evaluation.faculty_Lname }}</td>
+      <td class="cell">{{ evaluation.faculty_Fname }}</td>
+      <td class="cell">{{ evaluation.faculty_Mname }}</td>
+      <td class="cell">{{ evaluation.faculty_rank }}</td>
+      <td class="cell">{{ evaluation.semester }}</td>
+      <td class="cell">{{evaluation.subject_title}}</td>
+      <td class="cell">{{ evaluation.total_average }}</td>
+      <td class="cell">{{ evaluation.year }}</td>
+      <td class="cell">{{ evaluation.student_name }}</td>
+      <td>
+        <div><a style="color:green;" href="{% url 'edit_evaluation' evaluation.pk %}">Edit</a></div>
+      </td>
+      <td>
+        <form method="post" action="{% url 'delete_evaluation' evaluation.pk %}" id="delete-form">
+          {% csrf_token %}
+          <input type="button" value="Delete" onclick="showConfirm()">
+      </form>
+      </td>
+    </tr>
+  {% empty %}
+    <tr>
+      <td colspan="11">No survey ratings yet.</td>
+    </tr>
+  {% endfor %}
+    </tr>
+  </tbody>
+</table>
+</div>
+<script>
+  function showConfirm() {
+      if (confirm("Are you sure you want to delete this evaluation?")) {
+          document.getElementById("delete-form").submit();
+      } else {
+          return false;
+      }
+  } 
+</script>
+{% endblock %}
